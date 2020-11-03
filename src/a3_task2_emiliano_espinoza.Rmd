@@ -57,8 +57,10 @@ Make sure to `View()` the resulting data frame (remember: run `View()` in the Co
 
 ```{r}
 # Your code here: 
-
-
+sw_split_name <- starwars %>% # Start with starwars
+  separate(col = name, # Separate the name column...
+           into = c("name_1","name_2"), # Into two columns 'name_1' & 'name_2'
+           sep = "-") # Separated at the first dash
 ```
 
 #### 1B. Follow me
@@ -91,8 +93,12 @@ Make sure to `View()` the resulting data frame (remember: run `View()` in the Co
 
 ```{r}
 # Your code here:
-
-
+sw_skin_sep <- starwars %>% # Start from starwars data
+  separate(col = skin_color, # Separate the `skin_color` column
+           into = c("skin_1","skin_2"), # Into two columns
+           sep = ",", # Creating the separation at the first *comma*
+           extra = "merge", # If additional spaces, merge all into second column
+           remove = FALSE) # And *do not* remove the original column
 ```
 
 ### 2. `tidyr::unite()`
@@ -127,8 +133,11 @@ In the code chunk below, starting from the `mpg` data create a new data frame ca
 
 ```{r}
 # Your code here: 
-
-
+mpg_model_class <- mpg %>% # Start with mpg
+  unite(col = model_class, # Create a new column called 'model_class'
+        c(model, class), # That combines the model and class column
+        sep = "-",
+        remove = FALSE) # And *do not* remove the original column
 ```
 
 ### 3. Parsing dates with `lubridate()`
@@ -158,7 +167,11 @@ In the code chunk below, use `ymd()` to convert a date that you choose in `YYYY-
 ```{r}
 # Your code here: 
 
+ymd("2020-11-02")
 
+ymd("2020/11/02")
+
+ymd(20201102)
 ```
 
 #### 3B. Follow me
@@ -182,8 +195,11 @@ In the code chunk below, create a vector (using `c()`, as above) stored as `some
 
 ```{r}
 # Your code here: 
+some_dates <- c(11061972, 02142007,01301843) # Creates a vector of dates w/o spaces
+some_dates_converted <- mdy(some_dates) # Converts to Date, stores as some_dates_converted
+some_dates_converted # Return some_dates_converted
 
-
+class(some_dates_converted) # Check the class
 ```
 
 #### 3C. Follow me
@@ -226,8 +242,17 @@ Starting from the `lakers` dataset, create a new dataset called `gasol_hookshots
 
 ```{r}
 # Your code here: 
+gasol_hookshots <- lakers %>% 
+  filter(player == "Pau Gasol", type == "hook") %>% 
+  mutate(date_new = ymd(date)) %>% 
+  mutate(month_new = month(date_new))
+  
 
+# Code to calculate the number of Gasol's hook shots recorded by month for 2008-2009 season:
 
+hookshots_by_month <- gasol_hookshots %>% 
+  group_by(type, month_new) %>% 
+  summarize(total_recorded = sum(month_new)) 
 ```
 
 ### 4. `dplyr::case_when()`
@@ -276,8 +301,10 @@ Note: If you add another condition within `case_when()` that is `TRUE ~ "some th
 
 ```{r}
 # Your code here: 
-
-
+storms_danger <- storms %>% # Start from storms data
+  mutate(danger = case_when( 
+    status == "hurricane" ~ "high",
+    TRUE ~ "moderate"))
 ```
 
 ## 5. Practice version control w/git
